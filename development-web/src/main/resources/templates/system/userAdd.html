@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="fragments/layout">
+<head>
+    <title>添加用户</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="/static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="col-sm-9 col-md-10 main"  layout:fragment="content" >
+    <div id="mainContentAdd">
+        <div class="container-fluid">
+            <ol class="breadcrumb">
+                <li><a href="/user">用户</a></li>
+                <li class="active"><a href="#">添加用户</a></li>
+            </ol>
+        </div>
+        <div class="container-fluid">
+
+            <h3 class="h2">添加用户</h3>
+            <hr style="width:100%;background-color: transparent;height:2px" />
+            <form class="form-horizontal" role="form">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="name_id" class="col-sm-3 control-label">用户名:</label>
+                            <div class="col-sm-9">
+                                <input type="name" class="form-control" id="name_id" placeholder="请输入用户名" v-model.trim="user.name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="nickname_id" class="col-sm-3 control-label">昵称:</label>
+                            <div class="col-sm-9">
+                                <input type="nickname" class="form-control" id="nickname_id" placeholder="请输入昵称" v-model.trim="user.nickname">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="password_id" class="col-sm-3 control-label">密码:</label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password_id" placeholder="请输入密码" v-model.trim="user.password">
+                                <span class="small">(*必须为字母加数字且长度不小于8位)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="tel_id" class="col-sm-3 control-label">手机号:</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control" id="tel_id" placeholder="请输入手机号" v-model.trim="user.tel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="email_id" class="col-sm-3 control-label">邮箱号:</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="email_id" placeholder="请输入邮箱号" v-model.trim="user.email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="adde_id" class="col-sm-3 control-label">地址:</label>
+                            <div class="col-sm-9">
+                                <input type="addr" class="form-control" id="adde_id" placeholder="请输入地址" v-model.trim="user.addr">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-11">
+                        <a class="btn btn-primary btn-lg" href="/system/toUser">返回</a>
+                        <button type="button" class="btn btn-success btn-lg" @click="save">保存</button>
+                    </div>
+                </div>
+            </form>
+         </div>
+    </div>
+    <script>
+        window.onload = function () {
+            new Vue({
+                el:"#mainContentAdd",
+                data:{
+                    user:{},
+                },
+                methods:{
+                    save:function () {
+                        var saveObj = this.user;
+                        if (!strIsNotBlank(saveObj.name)){
+                            alert("用户名不能为空");
+                            return;
+                        }
+                        if (!CheckPassWord(saveObj.password)){
+                            alert("请输入正确格式的密码");
+                            return;
+                        }
+                        if (!strIsNotBlank(saveObj.nickname)){
+                            alert("用户名不能为空");
+                            return;
+                        }
+                        var requestParameter = new RequestParameter();
+                        requestParameter.setObjReqParam(saveObj);
+                        $.ajax({
+                            url:"/user",
+                            method:"POST",
+                            data:{requestParameter:JSON.stringify(requestParameter)},
+                            success:function (data) {
+                                if (data.code == 0){
+                                    window.location.href = "/system/toUser";
+                                }else{
+                                    alert(data.msg);
+                                    return;
+                                }
+                            },
+                        });
+                    }
+                },
+            });
+        };
+    </script>
+</div>
+</body>
+</html>
